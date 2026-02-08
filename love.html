@@ -2,210 +2,254 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>John ❤️ Sandhya</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love Proposal</title>
+
 <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
+body {
+    margin:0;
+    padding:0;
+    font-family:'Segoe UI', sans-serif;
+    background: linear-gradient(135deg,#ff9a9e,#fad0c4);
+    overflow:hidden;
+    text-align:center;
+}
 
-    body {
-        height:100vh;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        font-family:'Segoe UI', sans-serif;
-        overflow:hidden;
-        background: radial-gradient(circle at top, #ff9a9e, #fad0c4);
-        position:relative;
-    }
+/* Main box */
+.container {
+    position:relative;
+    background:white;
+    width:90%;
+    max-width:500px;
+    margin:50px auto;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+    z-index:2;
+}
 
-    .container {
-        text-align:center;
-        background: rgba(255,255,255,0.9);
-        padding:50px;
-        border-radius:20px;
-        box-shadow:0 10px 30px rgba(0,0,0,0.3);
-        z-index:2;
-    }
+h1 {
+    color:#d6336c;
+    font-size:24px;
+}
 
-    h1 {
-        color:#d6336c;
-        font-size:32px;
-        margin-bottom:20px;
-    }
+button {
+    padding:12px 25px;
+    font-size:18px;
+    border:none;
+    border-radius:30px;
+    cursor:pointer;
+    margin:10px;
+    transition:0.3s;
+}
 
-    button {
-        padding:12px 25px;
-        font-size:18px;
-        border:none;
-        border-radius:30px;
-        cursor:pointer;
-        transition:0.3s;
-        margin:10px;
-    }
+#yesBtn {
+    background:#ff4d6d;
+    color:white;
+}
 
-    #yesBtn {
-        background:#ff4d6d;
-        color:white;
-    }
+#yesBtn:hover {
+    transform:scale(1.1);
+}
 
-    #yesBtn:hover { transform:scale(1.1); }
+#noBtn {
+    background:#6c757d;
+    color:white;
+    position:absolute;
+}
 
-    #noBtn {
-        background:#6c757d;
-        color:white;
-        position:absolute;
-    }
+#message {
+    display:none;
+    font-size:20px;
+    color:#c9184a;
+    margin-top:20px;
+}
 
-    #message {
-        margin-top:20px;
-        font-size:22px;
-        color:#c9184a;
-        display:none;
-    }
+/* Floating hearts */
+.heart {
+    position:fixed;
+    bottom:-20px;
+    font-size:20px;
+    animation:floatUp 6s linear infinite;
+}
 
-    /* Floating hearts */
-    .heart {
-        position:absolute;
-        color:red;
-        font-size:20px;
-        animation:floatUp 6s linear infinite;
-        opacity:0.7;
-    }
+@keyframes floatUp {
+    0% { transform:translateY(0); opacity:0; }
+    50% { opacity:1; }
+    100% { transform:translateY(-100vh); opacity:0; }
+}
 
-    @keyframes floatUp {
-        0% { transform:translateY(100vh) scale(0.5); opacity:0; }
-        50% { opacity:1; }
-        100% { transform:translateY(-10vh) scale(1.2); opacity:0; }
-    }
-
-    canvas {
-        position:absolute;
-        top:0;
-        left:0;
-        z-index:1;
-        pointer-events:none;
-    }
+canvas {
+    position:fixed;
+    top:0;
+    left:0;
+    pointer-events:none;
+    z-index:1;
+}
 </style>
 </head>
+
 <body>
 
 <canvas id="fireworks"></canvas>
 
 <div class="container">
-    <h1>Sandhya ❤️<br><br>
-    From the moment you came into my life,<br>
-    everything became more beautiful.<br><br>
-    Will you always be mine?</h1>
+    <h1 id="proposalText">Loading...</h1>
 
     <button id="yesBtn">Yes ❤️</button>
     <button id="noBtn">No 🙈</button>
 
-    <div id="message">
-        Sandhya, you just made John the happiest man alive 💖<br><br>
-        I promise to love you, protect you,<br>
-        annoy you a little,<br>
-        and stand by you forever.<br><br>
-        You are my always. 🌹
-    </div>
+    <div id="message"></div>
 </div>
 
 <audio id="bgMusic" loop>
-    <source src="/music.mp3" type="audio/mpeg">
+    <source src="music.mp3" type="audio/mpeg">
 </audio>
-
-
 <script>
-/* Fullscreen */
-document.documentElement.requestFullscreen().catch(()=>{});
+window.addEventListener("load", function () {
 
-/* Background Music */
-const music = document.getElementById("bgMusic");
-window.addEventListener("click", () => {
-    music.play().catch(()=>{});
-}, { once:true });
+    /* =========================
+       GET QUERY STRING VALUES
+    ========================== */
+    function getParam(name) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(name);
+    }
 
-/* No Button Escape */
-const noBtn = document.getElementById("noBtn");
-let moveLeft = true;
+    let herName = getParam("her");
+    let hisName = getParam("him");
 
-noBtn.style.top = "60%";
-noBtn.style.left = "55%";
+    if (!herName || herName.trim() === "") {
+        herName = "My Love";
+    }
 
-noBtn.addEventListener("mouseover", function() {
-    noBtn.style.left = moveLeft ? "10%" : "80%";
-    moveLeft = !moveLeft;
-});
+    if (!hisName || hisName.trim() === "") {
+        hisName = "Someone Special";
+    }
 
-/* Yes Click */
-const yesBtn = document.getElementById("yesBtn");
-const message = document.getElementById("message");
+    herName = decodeURIComponent(herName);
+    hisName = decodeURIComponent(hisName);
 
-yesBtn.addEventListener("click", function() {
-    message.style.display = "block";
-    yesBtn.style.display = "none";
-    noBtn.style.display = "none";
-    startFireworks();
-});
+    /* =========================
+       INSERT TEXT DYNAMICALLY
+    ========================== */
+    document.getElementById("proposalText").innerHTML = `
+        ${herName} ❤️ <br><br>
+        You are the most beautiful part of my life.<br><br>
+        Will you always be mine?
+    `;
 
-/* Floating Hearts Generator */
-function createHeart() {
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "❤️";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = (Math.random() * 20 + 15) + "px";
-    heart.style.animationDuration = (Math.random() * 3 + 3) + "s";
-    document.body.appendChild(heart);
+    document.getElementById("message").innerHTML = `
+        ${herName} 💖<br><br>
+        You just made ${hisName} the happiest person alive.<br><br>
+        I promise to love you forever 🌹
+    `;
 
-    setTimeout(() => heart.remove(), 6000);
-}
-setInterval(createHeart, 300);
+    /* =========================
+       MUSIC (Mobile Safe)
+    ========================== */
+    const music = document.getElementById("bgMusic");
+    document.body.addEventListener("click", function () {
+        music.play().catch(() => {});
+    }, { once: true });
 
-/* Fireworks */
-const canvas = document.getElementById("fireworks");
-const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+    /* =========================
+       NO BUTTON ESCAPE
+    ========================== */
+    const noBtn = document.getElementById("noBtn");
+    let moveLeft = true;
 
-let particles = [];
+    function moveNoButton() {
+        noBtn.style.position = "relative";
+        noBtn.style.left = moveLeft ? "-120px" : "120px";
+        moveLeft = !moveLeft;
+    }
 
-function startFireworks() {
-    setInterval(() => {
-        for(let i=0;i<100;i++){
-            particles.push({
-                x:canvas.width/2,
-                y:canvas.height/2,
-                angle:Math.random()*2*Math.PI,
-                speed:Math.random()*5+2,
-                radius:2
-            });
-        }
-    }, 500);
-}
+    noBtn.addEventListener("mouseover", moveNoButton);   // Desktop
+    noBtn.addEventListener("touchstart", moveNoButton);  // Mobile
 
-function animate() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    particles.forEach((p,index)=>{
-        p.x += Math.cos(p.angle)*p.speed;
-        p.y += Math.sin(p.angle)*p.speed;
-        p.speed *= 0.95;
-        ctx.beginPath();
-        ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
-        ctx.fillStyle = "gold";
-        ctx.fill();
-        if(p.speed<0.5) particles.splice(index,1);
+    /* =========================
+       YES BUTTON
+    ========================== */
+    const yesBtn = document.getElementById("yesBtn");
+    const message = document.getElementById("message");
+
+    yesBtn.addEventListener("click", function () {
+        message.style.display = "block";
+        yesBtn.style.display = "none";
+        noBtn.style.display = "none";
+        startFireworks();
     });
-    requestAnimationFrame(animate);
-}
-animate();
 
-window.addEventListener("resize",()=>{
-    canvas.width=window.innerWidth;
-    canvas.height=window.innerHeight;
+    /* =========================
+       FLOATING HEARTS
+    ========================== */
+    function createHeart() {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerHTML = "❤️";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.fontSize = (Math.random() * 20 + 15) + "px";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 6000);
+    }
+
+    setInterval(createHeart, 300);
+
+    /* =========================
+       FIREWORKS
+    ========================== */
+    const canvas = document.getElementById("fireworks");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+
+    function startFireworks() {
+        setInterval(() => {
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    angle: Math.random() * 2 * Math.PI,
+                    speed: Math.random() * 6 + 2,
+                    radius: 2
+                });
+            }
+        }, 500);
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach((p, index) => {
+            p.x += Math.cos(p.angle) * p.speed;
+            p.y += Math.sin(p.angle) * p.speed;
+            p.speed *= 0.95;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = "gold";
+            ctx.fill();
+
+            if (p.speed < 0.5) particles.splice(index, 1);
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    window.addEventListener("resize", () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
 });
 </script>
 
+
 </body>
 </html>
-
-
-
